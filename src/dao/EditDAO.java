@@ -19,17 +19,7 @@ public class EditDAO {
     static PreparedStatement pst = null;
     public void suaTreEm(Scanner sc2) {
         try {
-            int maSua = 0;
-            boolean kt = false;
-            while (!kt) {
-                System.out.println("Nhập vào mã của trẻ cần sửa");
-                maSua = Integer.parseInt(sc.nextLine());
-                if (check.isExists("TREEM", "MaTre", String.valueOf(maSua)) == true) {
-                    kt = true;
-                } else {
-                    System.out.println("Không tìm thấy mã trẻ!");
-                }
-            }
+            int maSua = InputUtils.nhapMaTre(sc);
             String tenSua = check.nhapHoTenTre(sc);
             java.sql.Date ngaySinhSua = (Date) check.nhapNgaySinh(sc);
             String gioiTinhSua = check.nhapGioiTinh(sc);
@@ -71,7 +61,7 @@ public class EditDAO {
                     System.out.println(" nhập  lại mã cần sửa ");
                 }
             } catch (SQLException e) {
-                e.printStackTrace();
+                System.out.println("vui lòng nhập lại: ");
             }
         }
         String hoTenPH = null;
@@ -222,10 +212,9 @@ public class EditDAO {
         int MaTGH;
         do {
             try {
-                System.out.println("Nhâp mã thời gian học cần sửa");
+                System.out.println("Nhâp mã thời gian học cần sửa: ");
                 String MaTGHStr = sc.nextLine();
                 if (!InputUtils.validateMa(MaTGHStr)) {
-                    System.out.println("mã đăng ký không hợp lệ");
                     continue;
                 }
                 MaTGH = Integer.parseInt(MaTGHStr);
@@ -393,36 +382,32 @@ public class EditDAO {
 
         } while (!isValidInput);
         String ngayDangKyStr = "";
+        boolean isValidDate = false;
         do {
             try {
                 System.out.println("Nhập ngày đăng ký (yyyy-MM-dd):");
                 ngayDangKyStr = sc.nextLine();
-                if (!validateDate(ngayDangKyStr)) {
-                    System.out.println("Ngày đăng ký không hợp lệ.");
-                    continue;
-                }
+                isValidDate = validateDate(ngayDangKyStr);
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            isValidInput = true;
-        } while (!isValidInput);
+        } while (!isValidDate);
 
 
         String trangThaiInput = "";
+        boolean isValidTrangThai = false;
         do {
             try {
                 System.out.println("Nhập trạng thái đăng ký (ấn Enter để bỏ qua và sử dụng trạng thái mặc định 'Chưa Duyệt'):");
                 trangThaiInput = sc.nextLine();
-                String trangThai = trangThaiInput.isEmpty() ? "Chưa Duyệt" : trangThaiInput;
-                if (!validateTrangThai(trangThai)) {
-                    System.out.println("Trạng thái đăng ký không hợp lệ.");
-                    continue;
+                if (trangThaiInput.isEmpty()) {
+                    trangThaiInput = "Chưa Duyệt";
                 }
-                isValidInput = true;
+                isValidTrangThai = validateTrangThai(trangThaiInput);
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        } while (!isValidInput);
+        } while (!isValidTrangThai);
 
 
         try {

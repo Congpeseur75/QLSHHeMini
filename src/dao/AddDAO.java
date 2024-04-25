@@ -296,36 +296,32 @@ public class AddDAO {
 
 
         String ngayDangKyStr = "";
+        boolean isValidDate = false;
         do {
             try {
                 System.out.println("Nhập ngày đăng ký (yyyy-MM-dd):");
                 ngayDangKyStr = sc.nextLine();
-                if (!validateDate(ngayDangKyStr)) {
-                    System.out.println("Ngày đăng ký không hợp lệ.");
-                    continue;
-                }
+                isValidDate = validateDate(ngayDangKyStr);
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            isValidInput = true;
-        } while (!isValidInput);
+        } while (!isValidDate);
 
 
         String trangThaiInput = "";
+        boolean isValidTrangThai = false;
         do {
             try {
                 System.out.println("Nhập trạng thái đăng ký (ấn Enter để bỏ qua và sử dụng trạng thái mặc định 'Chưa Duyệt'):");
                 trangThaiInput = sc.nextLine();
-                String trangThai = trangThaiInput.isEmpty() ? "Chưa Duyệt" : trangThaiInput;
-                if (!validateTrangThai(trangThai)) {
-                    System.out.println("Trạng thái đăng ký không hợp lệ.");
-                    continue;
+                if (trangThaiInput.isEmpty()) {
+                    trangThaiInput = "Chưa Duyệt";
                 }
-                isValidInput = true;
+                isValidTrangThai = validateTrangThai(trangThaiInput);
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        } while (!isValidInput);
+        } while (!isValidTrangThai);
 
         DangKyTre dangKyTre = new DangKyTre(MaPH, MaTre, MaLH, Date.valueOf(ngayDangKyStr), trangThaiInput);
         dangKyTres.add(dangKyTre);

@@ -9,11 +9,14 @@ import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+
+import static java.sql.Date.valueOf;
 
 
 public class InputUtils {
@@ -85,6 +88,43 @@ public class InputUtils {
     }
 
     //utility Thảo
+    public static int nhapMaTre (Scanner sc) {
+        int maTre = 0;
+        boolean kt = false;
+        while (!kt) {
+            System.out.println("Nhập vào mã của trẻ cần sửa");
+            String input = sc.nextLine();
+            if (input != null && !input.trim().isEmpty() && input.matches("\\d+")) {
+                maTre = Integer.parseInt(input);
+                if (kiemTraMa("TREEM", "MaTre", String.valueOf(maTre)) == true) {
+                    kt = true;
+                } else {
+                    System.out.println("Không tìm thấy mã trẻ!");
+                }
+            } else {
+                System.out.println("Mã trẻ không hợp lệ, vui lòng nhập lại");
+            }
+        }
+        return maTre;
+    }
+    public static boolean kiemTraMa(String tenBang, String tenCot, String maBang) {
+        boolean kiemTra = false;
+        try {
+            con = ConnectDB.getConnectDB();
+            String sql = "SELECT * FROM " + tenBang + " WHERE " + tenCot + " = ?";
+            PreparedStatement pst = con.prepareStatement(sql);
+            pst.setString(1, maBang);
+            ResultSet rs = pst.executeQuery();
+            if (rs.next()) {
+                kiemTra = true;
+            }
+            con.isClosed();
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return kiemTra;
+    }
     public String nhapHoTenTre (Scanner sc) {
         System.out.println("Nhập vào họ tên của trẻ");
         String hoTenTre = sc.nextLine();
@@ -146,7 +186,7 @@ public class InputUtils {
             try {
                 System.out.println("Nhập vào ngày sinh của trẻ (YYYY-MM-DD)");
                 String NgaySinhSuaStr = sc.nextLine();
-                ngaySinhSua = java.sql.Date.valueOf(NgaySinhSuaStr);
+                ngaySinhSua = valueOf(NgaySinhSuaStr);
                 LocalDate ngaySinhLocalDate = ngaySinhSua.toLocalDate(); // chuyển đối tượng java.sql.date sang
 
                 LocalDate ngayHienTai = LocalDate.now();
@@ -654,12 +694,13 @@ public class InputUtils {
         return choice;
     }
     public static String getCheckNgayKhaiGiang() {
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-dd-MM");
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         while (true) {
             try {
                 con = ConnectDB.getConnectDB();
-                System.out.println("Nhập ngày Khai giảng (định dạng yyyy-dd-MM): ");
+                System.out.println("Nhập ngày Khai giảng (định dạng yyyy-MM-dd): ");
                 String ngayKhaiGiangString = sc.nextLine();
+
 
                 if (!isValidDate(ngayKhaiGiangString)) {
                     System.out.println("Ngày không hợp lệ. Vui lòng nhập lại đúng định dạng.");
@@ -667,12 +708,10 @@ public class InputUtils {
                 }
 
 
-                java.util.Date ngayKhaiGiang = formatter.parse(ngayKhaiGiangString);
                 return ngayKhaiGiangString;
-            } catch (ParseException e) {
+            } catch (Exception e) {
                 System.out.println("Ngày không hợp lệ. Vui lòng nhập lại đúng định dạng.");
-            }
-            finally {
+            } finally {
                 try {
                     if (con != null) {
                         con.close();
@@ -684,11 +723,11 @@ public class InputUtils {
         }
     }
 
-
     public static boolean isValidDate(String ngayKhaiGiangString) {
         try {
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-dd-MM");
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
             formatter.setLenient(false);
+
 
             java.util.Date ngayKhaiGiang = formatter.parse(ngayKhaiGiangString);
             return true;
@@ -708,17 +747,22 @@ public class InputUtils {
         }
         return true;
     }
-    public static boolean validateDate(String dateStr){
+    public static boolean validateDate(String dateStr) {
         try {
-            Date.valueOf(dateStr);
+            LocalDate.parse(dateStr);
             return true;
-        }
-        catch (IllegalArgumentException e){
+        } catch (DateTimeParseException e) {
+            System.out.println("Ngày đăng ký không hợp lệ. Vui lòng nhập lại.");
             return false;
         }
     }
-    public static boolean validateTrangThai(String TrangThai){
-        return TrangThai.equalsIgnoreCase("Đã duyệt") || TrangThai.equalsIgnoreCase("Chưa duyệt");
+    public static boolean validateTrangThai(String trangThai) {
+        if (trangThai.equalsIgnoreCase("Đã duyệt") || trangThai.equalsIgnoreCase("Chưa duyệt")) {
+            return true;
+        } else {
+            System.out.println("Trạng thái đăng ký không hợp lệ. Vui lòng nhập lại.");
+            return false;
+        }
     }
 
     public static boolean kiemTraMaDKTonTai(int MaDK) throws SQLException {
@@ -759,20 +803,46 @@ public class InputUtils {
 
     public String getValidNgayHoc(Scanner sc) {
         String NgayHoc = "";
-        while (NgayHoc.trim().isEmpty() || NgayHoc.matches("^[\\s\\p{Punct}]+$")) {
-            NgayHoc = sc.nextLine();
+        boolean validInput = false;
+
+        while (!validInput) {
+            NgayHoc = sc.nextLine().toLowerCase();
             if (NgayHoc.trim().isEmpty() || NgayHoc.matches("^[\\s\\p{Punct}]+$")) {
                 System.out.println("Không được để trống hoặc chỉ chứa khoảng trắng và ký tự đặc biệt.");
+            } else {
+                  switch (NgayHoc) {
+                    case "thứ hai":
+                    case "thứ ba":
+                    case "thứ tư":
+                    case "thứ năm":
+                    case "thứ sáu":
+                    case "thứ bảy":
+                    case "chủ nhật":
+                    case "cuối tuần":
+                        validInput = true;
+                        break;
+                    default:
+                        System.out.println("Ngày không hợp lệ. Vui lòng nhập lại ngày trong tuần hoặc cuối tuần.");
+                        break;
+                }
             }
         }
         return NgayHoc;
     }
     public String getValidGioHoc(Scanner sc) {
         String GioHoc = "";
-        while (GioHoc.trim().isEmpty() || GioHoc.matches("^[\\s\\p{Punct}]+$")) {
+        boolean validInput = false;
+
+        while (!validInput) {
             GioHoc = sc.nextLine();
             if (GioHoc.trim().isEmpty() || GioHoc.matches("^[\\s\\p{Punct}]+$")) {
-                System.out.println("Không được để trống hoặc chỉ chứa khoảng trắng và ký tự đặc biệt.");
+                System.out.println("Không được để trống hoặc chỉ chứa khoảng trắng và ký tự đặc biệt. Vui lòng nhập lại");
+            } else {
+                if (GioHoc.matches("^\\d{1,2}h(-\\d{1,2}[hp])?$")) {
+                    validInput = true;
+                } else {
+                    System.out.println("Giờ không hợp lệ. Vui lòng nhập lại theo định dạng ví dụ: 8h-10 hoặc 9h-00p.");
+                }
             }
         }
         return GioHoc;
