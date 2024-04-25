@@ -268,8 +268,7 @@ public class BGVView {
                 System.out.println("|       3.Sửa thời gian học            |");
                 System.out.println("|       4.Quay lại                     |");
                 System.out.println("========================================");
-                System.out.println("Chọn chức năng: ");
-                int choice = Integer.parseInt(sc.nextLine());
+                int choice = check.getValidChoice(sc);
                 switch (choice) {
                     case 1:
                         addDAO.themThoiGianHoc();
@@ -350,8 +349,7 @@ public class BGVView {
                 System.out.println("|       5.Tìm kiếm thông tin đăng ký   |");
                 System.out.println("|       6.Quay lại                     |");
                 System.out.println("========================================");
-                System.out.println("Chọn chức năng: ");
-                int choice = Integer.parseInt(sc.nextLine());
+                int choice = check.getValidChoice(sc);
                 switch (choice) {
                     case 1:
                         addDAO.themThongTinDangKy();

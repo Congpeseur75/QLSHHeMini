@@ -8,11 +8,13 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.sql.SQLException;
 import connectDB.ConnectDB;
+import utility.InputUtils;
 
 public class PhuHuynhMainView {
+    InputUtils check = new InputUtils();
     private PhuHuynhView phuHuynhView;
     private DangKyView dangKyView;
-    private Scanner scanner;
+    Scanner scanner;
 
     public PhuHuynhMainView() throws SQLException {
         this.phuHuynhView = new PhuHuynhView(new PhuHuynhController(new LopHocDAO(ConnectDB.getConnectDB())));
@@ -28,11 +30,8 @@ public class PhuHuynhMainView {
             System.out.println("|  3. Đăng ký lớp học cho trẻ                       |");
             System.out.println("|  4. Thoát                                         |");
             System.out.println("=====================================================");
-            System.out.print("Lựa chọn của bạn: ");
-
             try {
-                int choice = scanner.nextInt();
-
+                int choice = check.getValidChoice(scanner);
                 switch (choice) {
                     case 1:
                         phuHuynhView.layDanhSachLopHoc();
