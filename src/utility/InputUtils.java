@@ -204,23 +204,6 @@ public class InputUtils {
         return ngaySinhSua;
     }
 
-    public int nhapLuaChon (Scanner sc) {
-        int luaChon = 0;
-        boolean ct1 = true;
-        while (ct1) {
-            try {
-                luaChon = Integer.parseInt(sc.nextLine());
-                if (luaChon < 0 || luaChon > 6) {
-                    System.out.println("Lựa chọn chưa được thiết lập vui lòng chọn lại ");
-                } else {
-                    ct1 = false;
-                }
-            } catch (NumberFormatException e) {
-                System.out.println(" Lựa chọn không hợp lệ vui lòng nhập lại");
-            }
-        }
-        return luaChon;
-    }
 
     //utility Lực
 
@@ -257,13 +240,13 @@ public class InputUtils {
         while (!inputValid) {
             try {
                 ma = Integer.parseInt(sc.nextLine());
-                if (ma <= 0) {
-                    System.out.println("Phải là số nguyên dương.");
+                if (ma < 0 || ma > 9) {
+                    System.out.println("Lựa chọn không hợp lệ.");
                 } else {
                     inputValid = true;
                 }
             } catch (NumberFormatException ex) {
-                System.out.println("Không hợp lệ vui lòng nhập lại");
+                System.out.println("Không hợp lệ, vui lòng nhập lại.");
             }
         }
         return ma;
@@ -675,24 +658,6 @@ public class InputUtils {
         return hocPhi;
     }
 
-    public static int getCheckMenu() {
-        int choice = -1;
-        boolean validInput = false;
-        while (!validInput) {
-            try {
-                choice = Integer.parseInt(sc.nextLine());
-                if (choice < 0 || choice > 5) {
-                    throw new IllegalArgumentException("Lựa chọn không hợp lệ. Vui lòng nhập lại");
-                }
-                validInput = true;
-            } catch (NumberFormatException e) {
-                System.out.println("Lựa chọn không hợp lệ. Vui lòng nhập lại");
-            } catch (IllegalArgumentException e) {
-                System.out.println(e.getMessage());
-            }
-        }
-        return choice;
-    }
     public static String getCheckNgayKhaiGiang() {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         while (true) {
@@ -961,5 +926,97 @@ public class InputUtils {
                 System.out.println(e.getMessage());
             }
         }
+    }
+
+
+    public static int getCheckMenu9() {
+        int choice = -1;
+        boolean validInput = false;
+        while (!validInput) {
+            try {
+                choice = Integer.parseInt(sc.nextLine());
+                if (choice < 0 || choice > 9) {
+                    throw new IllegalArgumentException("Lựa chọn không hợp lệ. Vui lòng nhập lại");
+                }
+                validInput = true;
+            } catch (NumberFormatException e) {
+                System.out.println("Lựa chọn không hợp lệ. Vui lòng nhập lại");
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+        return choice;
+    }
+    public static int getCheckMenu7() {
+        int choice = -1;
+        boolean validInput = false;
+        while (!validInput) {
+            try {
+                choice = Integer.parseInt(sc.nextLine());
+                if (choice < 0 || choice > 7) {
+                    throw new IllegalArgumentException("Lựa chọn không hợp lệ. Vui lòng nhập lại");
+                }
+                validInput = true;
+            } catch (NumberFormatException e) {
+                System.out.println("Lựa chọn không hợp lệ. Vui lòng nhập lại");
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+        return choice;
+    }
+    public static int getCheckMenu6() {
+        int choice = -1;
+        boolean validInput = false;
+        while (!validInput) {
+            try {
+                choice = Integer.parseInt(sc.nextLine());
+                if (choice < 0 || choice > 6) {
+                    throw new IllegalArgumentException("Lựa chọn không hợp lệ. Vui lòng nhập lại");
+                }
+                validInput = true;
+            } catch (NumberFormatException e) {
+                System.out.println("Lựa chọn không hợp lệ. Vui lòng nhập lại");
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+        return choice;
+    }
+    public static int getCheckMenu4() {
+        int choice = -1;
+        boolean validInput = false;
+        while (!validInput) {
+            try {
+                choice = Integer.parseInt(sc.nextLine());
+                if (choice < 0 || choice > 4) {
+                    throw new IllegalArgumentException("Lựa chọn không hợp lệ. Vui lòng nhập lại");
+                }
+                validInput = true;
+            } catch (NumberFormatException e) {
+                System.out.println("Lựa chọn không hợp lệ. Vui lòng nhập lại");
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+        return choice;
+    }
+    public static int getCheckMenu5() {
+        int choice = -1;
+        boolean validInput = false;
+        while (!validInput) {
+            try {
+                choice = Integer.parseInt(sc.nextLine());
+                if (choice < 0 || choice > 5) {
+                    throw new IllegalArgumentException("Lựa chọn không hợp lệ. Vui lòng nhập lại");
+                }
+                validInput = true;
+            } catch (NumberFormatException e) {
+                System.out.println("Lựa chọn không hợp lệ. Vui lòng nhập lại");
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+        return choice;
     }
 }
